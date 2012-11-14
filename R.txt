@@ -1,0 +1,2 @@
+# Sort a data frame by column "foo":
+frame[order(frame$foo),]
