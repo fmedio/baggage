@@ -24,7 +24,7 @@
 
 package hello;
 
-import clutter.hypertoolkit.WebApp;
+import baggage.hypertoolkit.WebApp;
 
 public class HelloWorld {
     public static void main(String[] args) throws Exception {

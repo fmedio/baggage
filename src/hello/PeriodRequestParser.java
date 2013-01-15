@@ -24,10 +24,10 @@
 
 package hello;
 
-import clutter.Bag;
-import clutter.ListBag;
-import clutter.hypertoolkit.request.InvalidRequestException;
-import clutter.hypertoolkit.request.RequestParser;
+import baggage.Bag;
+import baggage.ListBag;
+import baggage.hypertoolkit.request.InvalidRequestException;
+import baggage.hypertoolkit.request.RequestParser;
 
 public class PeriodRequestParser extends RequestParser<Period> {
     @Override

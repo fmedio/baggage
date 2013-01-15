@@ -24,14 +24,14 @@
 
 package hello;
 
-import clutter.Bag;
-import clutter.hypertoolkit.html.Includes;
-import clutter.hypertoolkit.html.Link;
-import clutter.hypertoolkit.html.Renderable;
-import clutter.hypertoolkit.html.Renderables;
-import clutter.hypertoolkit.views.Page;
+import baggage.Bag;
+import baggage.hypertoolkit.html.Includes;
+import baggage.hypertoolkit.html.Link;
+import baggage.hypertoolkit.html.Renderable;
+import baggage.hypertoolkit.html.Renderables;
+import baggage.hypertoolkit.views.Page;
 
-import static clutter.hypertoolkit.html.Html.*;
+import static baggage.hypertoolkit.html.Html.*;
 
 public class PandaPage extends Page {
     @Override

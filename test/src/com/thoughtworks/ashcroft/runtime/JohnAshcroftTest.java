@@ -1,6 +1,6 @@
 package com.thoughtworks.ashcroft.runtime;
 
-import clutter.Ignored;
+import baggage.Ignored;
 import junit.framework.TestCase;
 
 import javax.xml.parsers.DocumentBuilderFactory;

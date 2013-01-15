@@ -24,8 +24,8 @@
 
 package hello;
 
-import clutter.hypertoolkit.App;
-import clutter.hypertoolkit.security.AuthenticationService;
+import baggage.hypertoolkit.App;
+import baggage.hypertoolkit.security.AuthenticationService;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;

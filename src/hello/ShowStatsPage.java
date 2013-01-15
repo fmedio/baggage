@@ -24,13 +24,13 @@
 
 package hello;
 
-import clutter.hypertoolkit.html.Includes;
-import clutter.hypertoolkit.html.Renderable;
-import clutter.hypertoolkit.html.Renderables;
-import clutter.hypertoolkit.views.Page;
+import baggage.hypertoolkit.html.Includes;
+import baggage.hypertoolkit.html.Renderable;
+import baggage.hypertoolkit.html.Renderables;
+import baggage.hypertoolkit.views.Page;
 
-import static clutter.hypertoolkit.html.Html.div;
-import static clutter.hypertoolkit.html.Html.h1;
+import static baggage.hypertoolkit.html.Html.div;
+import static baggage.hypertoolkit.html.Html.h1;
 
 public class ShowStatsPage extends Page {
     private Period period;

@@ -1,4 +1,4 @@
-- For all source files in 'clutter' package:
+- For all source files in 'baggage' package:
 
 The MIT License
 

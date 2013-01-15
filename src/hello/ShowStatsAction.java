@@ -24,13 +24,13 @@
 
 package hello;
 
-import clutter.hypertoolkit.Action;
-import clutter.hypertoolkit.ActionId;
-import clutter.hypertoolkit.RequestHandler;
-import clutter.hypertoolkit.request.RequestParser;
-import clutter.hypertoolkit.security.CookieJar;
-import clutter.hypertoolkit.views.Resource;
-import clutter.hypertoolkit.views.TextResource;
+import baggage.hypertoolkit.Action;
+import baggage.hypertoolkit.ActionId;
+import baggage.hypertoolkit.RequestHandler;
+import baggage.hypertoolkit.request.RequestParser;
+import baggage.hypertoolkit.security.CookieJar;
+import baggage.hypertoolkit.views.Resource;
+import baggage.hypertoolkit.views.TextResource;
 
 public class ShowStatsAction extends Action<Period> {
     public static final ActionId ID = new ActionId() {

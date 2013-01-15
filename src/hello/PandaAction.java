@@ -24,14 +24,14 @@
 
 package hello;
 
-import clutter.Nil;
-import clutter.hypertoolkit.Action;
-import clutter.hypertoolkit.ActionId;
-import clutter.hypertoolkit.RequestHandler;
-import clutter.hypertoolkit.request.NilRequestParser;
-import clutter.hypertoolkit.request.RequestParser;
-import clutter.hypertoolkit.security.CookieJar;
-import clutter.hypertoolkit.views.Resource;
+import baggage.Nil;
+import baggage.hypertoolkit.Action;
+import baggage.hypertoolkit.ActionId;
+import baggage.hypertoolkit.RequestHandler;
+import baggage.hypertoolkit.request.NilRequestParser;
+import baggage.hypertoolkit.request.RequestParser;
+import baggage.hypertoolkit.security.CookieJar;
+import baggage.hypertoolkit.views.Resource;
 
 public class PandaAction extends Action<Nil> {
     public static final ActionId<MyServices> ID = new ActionId<MyServices>() {
