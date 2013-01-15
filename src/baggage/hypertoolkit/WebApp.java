@@ -43,7 +43,7 @@ public class WebApp<T extends App> {
         this(app, new ActionResolver<T>(defaultAction, actions));
     }
 
-    public void start(int httpPort, int ajpPort) {
+    public void start(int httpPort) {
         Server server = new Server();
         Connector connector = new SelectChannelConnector();
         connector.setPort(httpPort);

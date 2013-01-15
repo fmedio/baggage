@@ -37,6 +37,6 @@ public class HelloWorld {
                 PandaAction.ID,
                 ShowStatsAction.ID);
 
-        webApp.start(8080, 8009);
+        webApp.start(8080);
     }
 }
