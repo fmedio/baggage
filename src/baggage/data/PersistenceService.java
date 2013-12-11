@@ -10,23 +10,24 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Restrictions;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
 public class PersistenceService {
     private SessionFactory sessionFactory;
 
-    public PersistenceService(String configResourcePath, String mappingResourcePath) {
+    public PersistenceService(String configFile, String mappingFile) {
         Configuration configuration = new Configuration();
         Properties properties = new Properties();
         try {
-            properties.load(this.getClass().getClassLoader().getResourceAsStream(configResourcePath));
+            properties.load(new FileInputStream(configFile));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         properties.putAll(System.getProperties());
         configuration.setProperties(properties);
-        configuration.addResource(mappingResourcePath);
+        configuration.addFile(mappingFile);
         sessionFactory = configuration.buildSessionFactory();
     }
 
