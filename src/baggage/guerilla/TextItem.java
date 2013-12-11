@@ -25,7 +25,7 @@
 package baggage.guerilla;
 
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 public class TextItem implements GuerillaType {
     private String value;
@@ -36,6 +36,6 @@ public class TextItem implements GuerillaType {
 
     @Override
     public String getStringValue() {
-        return StringEscapeUtils.unescapeHtml(value);
+        return StringEscapeUtils.unescapeHtml4(value);
     }
 }

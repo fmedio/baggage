@@ -24,14 +24,15 @@
 
 package baggage.hypertoolkit.html;
 
-import org.apache.commons.lang.StringEscapeUtils;
+
+import org.apache.commons.lang3.StringEscapeUtils;
 
 public class Attribute {
     private String name, value;
 
     public Attribute(String name, String value) {
-        this.name = StringEscapeUtils.escapeHtml(name);
-        this.value = StringEscapeUtils.escapeHtml(value);
+        this.name = StringEscapeUtils.escapeHtml4(name);
+        this.value = StringEscapeUtils.escapeHtml4(value);
     }
 
     public String getName() {

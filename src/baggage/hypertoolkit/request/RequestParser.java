@@ -25,7 +25,7 @@
 package baggage.hypertoolkit.request;
 
 import baggage.Bag;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;

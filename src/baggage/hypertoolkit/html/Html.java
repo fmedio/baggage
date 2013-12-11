@@ -25,7 +25,7 @@
 package baggage.hypertoolkit.html;
 
 import baggage.hypertoolkit.ActionId;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -243,7 +243,7 @@ public class Html {
     public static Tag passwordInput(String name) {
         Tag tag = input();
         tag.attr("type", "password");
-        tag.attr("name", StringEscapeUtils.escapeHtml(name));
+        tag.attr("name", StringEscapeUtils.escapeHtml4(name));
         return tag;
     }
 
@@ -280,7 +280,7 @@ public class Html {
     public static Tag submit(String value) {
         Tag input = input();
         input.attr("type", "submit");
-        input.attr("value", StringEscapeUtils.escapeHtml(value));
+        input.attr("value", StringEscapeUtils.escapeHtml4(value));
         return input;
     }
 
@@ -316,7 +316,7 @@ public class Html {
     public static Tag textInput(String name) {
         Tag tag = input();
         tag.attr("type", "text");
-        tag.attr("name", StringEscapeUtils.escapeHtml(name));
+        tag.attr("name", StringEscapeUtils.escapeHtml4(name));
         return tag;
     }
 
