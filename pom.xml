@@ -98,6 +98,13 @@
             <artifactId>lucene-core</artifactId>
             <version>3.6.1</version>
         </dependency>
+        <dependency>
+            <groupId>java</groupId>
+            <artifactId>jce</artifactId>
+            <scope>system</scope>
+            <version>1.7</version>
+            <systemPath>${java.home}/lib/jce.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <repositories>
