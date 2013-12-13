@@ -31,6 +31,9 @@ public class PersistenceService {
         sessionFactory = configuration.buildSessionFactory();
     }
 
+    public PersistenceService(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     public <T> T execute(Transaction<T> transaction) {
         Session session = sessionFactory.openSession();
