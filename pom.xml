@@ -8,7 +8,7 @@
     <name>baggage</name>
     <url>http://github.com/fmedio/baggage</url>
     <properties>
-        <kotlin.version>0.6.1617</kotlin.version>
+        <kotlin.version>0.6.1673</kotlin.version>
         <encoding>UTF-8</encoding>
     </properties>
 
