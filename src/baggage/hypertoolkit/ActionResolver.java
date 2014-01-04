@@ -33,26 +33,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ActionResolver<T> {
-    private Map<String, ActionId> map;
+    private Map<String, ActionId> routes;
     private ActionId fourOhFour;
     private ActionId defaultAction;
 
     public ActionResolver(ActionId defaultAction, ActionId... actions) {
         this.defaultAction = defaultAction;
         this.fourOhFour = FourOhFour.ID;
-        map = new HashMap<String, ActionId>();
+        routes = new HashMap<>();
 
-        addActions(actions);
+        addRoute(actions);
     }
 
-    public void addActions(ActionId... actionIds) {
+    public void addRoute(ActionId... actionIds) {
         for (ActionId actionId : actionIds) {
-            map.put(actionId.getName(), actionId);
+            routes.put(actionId.getName(), actionId);
         }
-    }
-
-    public ActionId<T> getDefaultAction() {
-        return defaultAction;
     }
 
     public ActionId<T> resolve(HttpServletRequest request) {
@@ -69,8 +65,8 @@ public class ActionResolver<T> {
         if (StringUtils.isEmpty(name)) {
             return defaultAction;
         }
-        if (map.containsKey(name)) {
-            return map.get(name);
+        if (routes.containsKey(name)) {
+            return routes.get(name);
         } else {
             Log.debug(this, "404: " + name);
             return fourOhFour;
