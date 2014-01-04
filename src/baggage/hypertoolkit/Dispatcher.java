@@ -38,7 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class Dispatcher<ServiceType extends App> extends HttpServlet {
+public class Dispatcher<ServiceType extends BaseServices> extends HttpServlet {
     private Clock clock;
     private ServiceType services;
     private ActionResolver<ServiceType> actionResolver;

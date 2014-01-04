@@ -24,13 +24,13 @@
 
 package hello;
 
-import baggage.hypertoolkit.App;
+import baggage.hypertoolkit.BaseServices;
 import baggage.hypertoolkit.security.AuthenticationService;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-public class MyServices implements App {
+public class MyServices implements BaseServices {
     private SecretKeySpec secretKey = new SecretKeySpec("12345678abcdefgh".getBytes(), "AES");
 
     @Override

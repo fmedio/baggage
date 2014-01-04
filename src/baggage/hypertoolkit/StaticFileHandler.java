@@ -36,15 +36,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StaticFileHandler implements RequestHandler {
-    private static class JavaGenericsSuckAss<T extends App> implements ActionId<T> {
+    private static class JavaGenericsSuckAss<T extends BaseServices> implements ActionId<T> {
         @Override
         public String getName() {
             return "static";
         }
 
         @Override
-        public RequestHandler makeAction(T t) {
-            return new StaticFileHandler(t.getWebDir());
+        public RequestHandler makeAction(T services) {
+            return new StaticFileHandler(services.getWebDir());
         }
     }
 
@@ -69,7 +69,7 @@ public class StaticFileHandler implements RequestHandler {
                 {".gz", "application/gzip"}
         };
 
-        MIME_TYPES = new HashMap<String, String>();
+        MIME_TYPES = new HashMap<>();
         for (String[] mapping : EXTENSIONS) {
             MIME_TYPES.put(mapping[0], mapping[1]);
         }

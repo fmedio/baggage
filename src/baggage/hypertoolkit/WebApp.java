@@ -30,12 +30,12 @@ import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
-public class WebApp<T extends App> {
-    private T app;
+public class WebApp<T extends BaseServices> {
+    private T services;
     private ActionResolver<T> actionResolver;
 
     public WebApp(T app, ActionResolver<T> actionResolver) {
-        this.app = app;
+        this.services = app;
         this.actionResolver = actionResolver;
     }
 
@@ -57,7 +57,7 @@ public class WebApp<T extends App> {
         contextHandler.setContextPath("/");
         server.setHandler(contextHandler);
 
-        Dispatcher dispatcher = new Dispatcher<T>(app, actionResolver);
+        Dispatcher dispatcher = new Dispatcher<T>(services, actionResolver);
         contextHandler.addServlet(new ServletHolder(dispatcher), "/");
         server.setHandler(contextHandler);
 

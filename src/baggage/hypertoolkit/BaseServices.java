@@ -28,7 +28,7 @@ import baggage.hypertoolkit.security.AuthenticationService;
 
 import javax.crypto.SecretKey;
 
-public interface App {
+public interface BaseServices {
     public SecretKey getSecretKey();
 
     public AuthenticationService getAuthenticationService();
