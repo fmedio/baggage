@@ -5,9 +5,6 @@
 package baggage.hypertoolkit.actions;
 
 import baggage.hypertoolkit.Action;
-import baggage.hypertoolkit.ActionId;
-import baggage.hypertoolkit.BaseServices;
-import baggage.hypertoolkit.RequestHandler;
 import baggage.hypertoolkit.request.GrantSessionRequest;
 import baggage.hypertoolkit.request.GrantSessionRequestParser;
 import baggage.hypertoolkit.request.RequestParser;
@@ -19,21 +16,7 @@ import baggage.hypertoolkit.views.Resource;
 import org.json.JSONObject;
 
 public class GrantSessionAction extends Action<GrantSessionRequest> {
-    private static class JavaGenericsSuckAss<T extends BaseServices> implements ActionId<T> {
-        @Override
-        public String getName() {
-            return "session";
-        }
-
-        @Override
-        public RequestHandler makeAction(T app) {
-            return new GrantSessionAction(app.getAuthenticationService());
-        }
-    }
-
-    ;
-
-    public static ActionId ID = new JavaGenericsSuckAss();
+    public static String ID = "session";
 
     private AuthenticationService authenticationService;
 

@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.function.Function;
 
 public class Dispatcher<ServiceType extends BaseServices> extends HttpServlet {
     private Clock clock;
@@ -51,8 +52,8 @@ public class Dispatcher<ServiceType extends BaseServices> extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        ActionId<ServiceType> actionId = actionResolver.resolve(request);
-        RequestHandler requestHandler = actionId.makeAction(services);
+        Function<ServiceType, RequestHandler> f = actionResolver.resolve(request);
+        RequestHandler requestHandler = f.apply(services);
         Resource resource;
         try {
             CookieJar cookieJar = new CookieJar(services.getName(), services.getSecretKey(), request, response);

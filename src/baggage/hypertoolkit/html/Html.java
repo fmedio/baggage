@@ -24,7 +24,6 @@
 
 package baggage.hypertoolkit.html;
 
-import baggage.hypertoolkit.ActionId;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.IOException;
@@ -80,8 +79,8 @@ public class Html {
         return new Tag("fieldset");
     }
 
-    public static Tag form(String method, ActionId action) {
-        return form(attr("method", method), attr("action", action.getName()));
+    public static Tag form(String method, String target) {
+        return form(attr("method", method), attr("action", target));
     }
 
     public static Tag form(Attribute... attributes) {

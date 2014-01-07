@@ -1,6 +1,5 @@
 package baggage.hypertoolkit.views;
 
-import baggage.hypertoolkit.ActionId;
 import baggage.hypertoolkit.html.*;
 
 import java.io.IOException;
@@ -14,18 +13,18 @@ public abstract class Pager implements Renderable {
     private int valuesPerPage;
     private int currentStartValue;
     private int maxPagesToDisplay;
-    private ActionId actionId;
+    private String urlTarget;
     private int totalPages;
     private int currentPage;
     private Tag activeLeftArrow, inactiveLeftArrow;
     private Tag activeRightArrow, inactiveRightArrow;
 
-    public Pager(int totalValues, int valuesPerPage, int currentStartValue, int maxPagesToDisplay, ActionId actionId, CssClass cssClass) {
+    public Pager(int totalValues, int valuesPerPage, int currentStartValue, int maxPagesToDisplay, String urlTarget, CssClass cssClass) {
         this.totalValues = totalValues;
         this.valuesPerPage = valuesPerPage;
         this.currentStartValue = currentStartValue;
         this.maxPagesToDisplay = maxPagesToDisplay;
-        this.actionId = actionId;
+        this.urlTarget = urlTarget;
         this.cssClass = cssClass;
         totalPages = (int) Math.ceil((float) this.totalValues / (float) this.valuesPerPage);
         currentPage = (int) Math.floor((float) this.currentStartValue / (float) this.valuesPerPage);
@@ -92,7 +91,7 @@ public abstract class Pager implements Renderable {
     }
 
     private Renderable makeLink(Renderable contents, int firstDesiredValue) {
-        return new Link(actionId, makeParams(firstDesiredValue)).add(contents);
+        return new Link(urlTarget, makeParams(firstDesiredValue)).add(contents);
     }
 
     protected Interval computeInterval() {

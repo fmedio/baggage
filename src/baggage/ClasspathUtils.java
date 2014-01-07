@@ -36,7 +36,5 @@ public class ClasspathUtils {
     public static File openFileFromResourcePath(String path) {
         URL resource = ClasspathUtils.class.getResource(path);
         return new File(resource.getFile());
-        // There used to be a whitespace here   
-        
     }
 }

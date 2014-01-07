@@ -25,25 +25,13 @@
 package hello;
 
 import baggage.hypertoolkit.Action;
-import baggage.hypertoolkit.ActionId;
-import baggage.hypertoolkit.RequestHandler;
 import baggage.hypertoolkit.request.RequestParser;
 import baggage.hypertoolkit.security.CookieJar;
 import baggage.hypertoolkit.views.Resource;
 import baggage.hypertoolkit.views.TextResource;
 
 public class ShowStatsAction extends Action<Period> {
-    public static final ActionId ID = new ActionId() {
-        @Override
-        public String getName() {
-            return "showStats";
-        }
-
-        @Override
-        public RequestHandler makeAction(Object o) {
-            return new ShowStatsAction();
-        }
-    };
+    public static String ID = "showStats";
 
     @Override
     public Resource execute(CookieJar cookieJar, Period period) {

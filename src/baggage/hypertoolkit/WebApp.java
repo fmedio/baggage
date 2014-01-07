@@ -30,17 +30,19 @@ import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
+import java.util.function.Function;
+
 public class WebApp<T extends BaseServices> {
     private T services;
     private ActionResolver<T> actionResolver;
 
-    public WebApp(T app, ActionResolver<T> actionResolver) {
+    public WebApp(T app, Function<T, RequestHandler> defaultHandler) {
         this.services = app;
-        this.actionResolver = actionResolver;
+        this.actionResolver = new ActionResolver<>(defaultHandler);
     }
 
-    public WebApp(T app, ActionId defaultAction, ActionId... actions) {
-        this(app, new ActionResolver<T>(defaultAction, actions));
+    public void route(String route, Function<T, RequestHandler> handler) {
+        actionResolver.route(route, handler);
     }
 
     public void start(int httpPort) {

@@ -31,45 +31,40 @@ import org.apache.commons.lang3.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
-public class ActionResolver<T> {
-    private Map<String, ActionId> routes;
-    private ActionId fourOhFour;
-    private ActionId defaultAction;
+public class ActionResolver<T extends BaseServices> {
+    private Map<String, Function<T, RequestHandler>> map;
+    private Function<T, RequestHandler> defaultHandler;
 
-    public ActionResolver(ActionId defaultAction, ActionId... actions) {
-        this.defaultAction = defaultAction;
-        this.fourOhFour = FourOhFour.ID;
-        routes = new HashMap<>();
-
-        addRoute(actions);
+    public ActionResolver(Function<T, RequestHandler> defaultHandler) {
+        this.defaultHandler = defaultHandler;
+        map = new HashMap<>();
     }
 
-    public void addRoute(ActionId... actionIds) {
-        for (ActionId actionId : actionIds) {
-            routes.put(actionId.getName(), actionId);
-        }
+    public void route(String name, Function<T, RequestHandler> handler) {
+        map.put(name, handler);
     }
 
-    public ActionId<T> resolve(HttpServletRequest request) {
+    public Function<T, RequestHandler> resolve(HttpServletRequest request) {
         String name = request.getRequestURI()
                 .replaceAll("^" + request.getServletPath() + "/", "")
                 .replaceAll("^/", "");
 
         for (String extension : StaticFileHandler.MIME_TYPES.keySet()) {
             if (name.endsWith(extension)) {
-                return StaticFileHandler.ID;
+                return t -> new StaticFileHandler(t.getWebDir());
             }
         }
 
         if (StringUtils.isEmpty(name)) {
-            return defaultAction;
+            return defaultHandler;
         }
-        if (routes.containsKey(name)) {
-            return routes.get(name);
+        if (map.containsKey(name)) {
+            return map.get(name);
         } else {
             Log.debug(this, "404: " + name);
-            return fourOhFour;
+            return t -> new FourOhFour();
         }
     }
 

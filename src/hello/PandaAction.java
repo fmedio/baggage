@@ -26,27 +26,12 @@ package hello;
 
 import baggage.Nil;
 import baggage.hypertoolkit.Action;
-import baggage.hypertoolkit.ActionId;
-import baggage.hypertoolkit.RequestHandler;
 import baggage.hypertoolkit.request.NilRequestParser;
 import baggage.hypertoolkit.request.RequestParser;
 import baggage.hypertoolkit.security.CookieJar;
 import baggage.hypertoolkit.views.Resource;
 
 public class PandaAction extends Action<Nil> {
-    public static final ActionId<MyServices> ID = new ActionId<MyServices>() {
-        @Override
-        public String getName() {
-            return "panda";
-        }
-
-        @Override
-        public RequestHandler makeAction(MyServices myServices) {
-            return new PandaAction();
-        }
-    };
-
-
     @Override
     public Resource execute(CookieJar cookieJar, Nil aNul) {
         return new PandaPage();

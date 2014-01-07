@@ -34,7 +34,11 @@ public class Link extends Tag {
     private String target;
 
     public Link(ActionId actionId) {
-        this(actionId.getName(), new ListBag<String, String>(), false);
+        this(actionId.getName(), new ListBag<>(), false);
+    }
+
+    public Link(String route) {
+        this(route, new ListBag<>(), false);
     }
 
     public Link(ActionId id, Bag<String, String> bag) {
