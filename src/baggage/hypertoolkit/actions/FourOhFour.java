@@ -25,8 +25,6 @@
 package baggage.hypertoolkit.actions;
 
 import baggage.hypertoolkit.Action;
-import baggage.hypertoolkit.ActionId;
-import baggage.hypertoolkit.RequestHandler;
 import baggage.hypertoolkit.request.NilRequestParser;
 import baggage.hypertoolkit.request.RequestParser;
 import baggage.hypertoolkit.security.CookieJar;
@@ -34,15 +32,6 @@ import baggage.hypertoolkit.views.FourOhFourPage;
 import baggage.hypertoolkit.views.Resource;
 
 public class FourOhFour extends Action {
-    public static final ActionId ID = new ActionId() {
-        public String getName() {
-            return "404";
-        }
-
-        public RequestHandler makeAction(Object services) {
-            return new FourOhFour();
-        }
-    };
 
     public Resource execute(CookieJar cookieJar, Object query) {
         return new FourOhFourPage();

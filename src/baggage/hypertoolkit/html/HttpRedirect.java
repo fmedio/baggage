@@ -26,8 +26,6 @@ package baggage.hypertoolkit.html;
 
 import baggage.Bag;
 import baggage.Bags;
-import baggage.hypertoolkit.ActionId;
-import baggage.hypertoolkit.request.RequestParser;
 import baggage.hypertoolkit.views.Resource;
 
 import javax.servlet.http.HttpServletResponse;
@@ -39,16 +37,6 @@ public class HttpRedirect<QueryType> implements Resource {
 
     public HttpRedirect(String target) {
         this.target = target;
-    }
-
-    public HttpRedirect(ActionId<?> actionId) {
-        target = actionId.getName();
-    }
-
-    public HttpRedirect(ActionId<?> actionId, QueryType queryType, RequestParser<QueryType> requestParser) {
-        Bag<String, String> parameters = requestParser.toParameters(queryType);
-        Link link = new Link(actionId, parameters);
-        target = link.getTarget();
     }
 
     @Override

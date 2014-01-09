@@ -26,31 +26,18 @@ package baggage.hypertoolkit.html;
 
 import baggage.Bag;
 import baggage.ListBag;
-import baggage.hypertoolkit.ActionId;
 
 import java.util.UUID;
 
 public class Link extends Tag {
     private String target;
 
-    public Link(ActionId actionId) {
-        this(actionId.getName(), new ListBag<>(), false);
-    }
-
     public Link(String route) {
         this(route, new ListBag<>(), false);
     }
 
-    public Link(ActionId id, Bag<String, String> bag) {
-        this(id.getName(), bag, false);
-    }
-
     public Link(String baseUrl, Bag<String, String> parameters) {
         this(baseUrl, parameters, false);
-    }
-
-    public Link(ActionId actionId, Bag<String, String> parameters, boolean includeCacheBuster) {
-        this(actionId.getName(), parameters, includeCacheBuster);
     }
 
     public Link(String targetAction, Bag<String, String> parameters, boolean includeCacheBuster) {

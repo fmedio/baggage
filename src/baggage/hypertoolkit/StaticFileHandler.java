@@ -36,19 +36,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StaticFileHandler implements RequestHandler {
-    private static class JavaGenericsSuckAss<T extends BaseServices> implements ActionId<T> {
-        @Override
-        public String getName() {
-            return "static";
-        }
-
-        @Override
-        public RequestHandler makeAction(T services) {
-            return new StaticFileHandler(services.getWebDir());
-        }
-    }
-
-    public static final JavaGenericsSuckAss ID = new JavaGenericsSuckAss();
 
     public static final Map<String, String> MIME_TYPES;
     private String webDir;

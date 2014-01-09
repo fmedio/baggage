@@ -102,7 +102,7 @@
             <groupId>java</groupId>
             <artifactId>jce</artifactId>
             <scope>system</scope>
-            <version>1.7</version>
+            <version>1.8</version>
             <systemPath>${java.home}/lib/jce.jar</systemPath>
         </dependency>
     </dependencies>
