@@ -31,9 +31,9 @@ public class HelloWorld {
         // Your production app should load this from a secure location
         MyServices myServices = new MyServices();
 
-        WebApp<MyServices> webApp = new WebApp<>(myServices, s -> new PandaAction());
-        webApp.route("panda", s -> new PandaAction());
-        webApp.route(ShowStatsAction.ID, s -> new ShowStatsAction());
+        WebApp<MyServices> webApp = new WebApp<>(myServices, () -> new PandaAction());
+        webApp.route("panda", () -> new PandaAction());
+        webApp.route(ShowStatsAction.ID, () -> new ShowStatsAction());
         webApp.start(8080);
     }
 }

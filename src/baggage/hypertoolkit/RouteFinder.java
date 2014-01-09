@@ -31,29 +31,29 @@ import org.apache.commons.lang3.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
-public class ActionResolver<T extends BaseServices> {
-    private Map<String, Function<T, RequestHandler>> map;
-    private Function<T, RequestHandler> defaultHandler;
+public class RouteFinder {
+    private Map<String, Supplier<RequestHandler>> map;
+    private Supplier<RequestHandler> defaultHandler;
 
-    public ActionResolver(Function<T, RequestHandler> defaultHandler) {
+    public RouteFinder(Supplier<RequestHandler> defaultHandler) {
         this.defaultHandler = defaultHandler;
         map = new HashMap<>();
     }
 
-    public void route(String name, Function<T, RequestHandler> handler) {
+    public void route(String name, Supplier<RequestHandler> handler) {
         map.put(name, handler);
     }
 
-    public Function<T, RequestHandler> resolve(HttpServletRequest request) {
+    public Supplier<RequestHandler> resolve(HttpServletRequest request) {
         String name = request.getRequestURI()
                 .replaceAll("^" + request.getServletPath() + "/", "")
                 .replaceAll("^/", "");
 
         for (String extension : StaticFileHandler.MIME_TYPES.keySet()) {
             if (name.endsWith(extension)) {
-                return t -> new StaticFileHandler(t.getWebDir());
+                return() -> new StaticFileHandler("web");
             }
         }
 
@@ -64,7 +64,7 @@ public class ActionResolver<T extends BaseServices> {
             return map.get(name);
         } else {
             Log.debug(this, "404: " + name);
-            return t -> new FourOhFour();
+            return () -> new FourOhFour();
         }
     }
 
