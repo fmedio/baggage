@@ -24,7 +24,6 @@
 
 package baggage.hypertoolkit;
 
-import baggage.hypertoolkit.security.CookieJar;
 import baggage.hypertoolkit.views.FourOhFourPage;
 import baggage.hypertoolkit.views.InputStreamResource;
 import baggage.hypertoolkit.views.Resource;
@@ -73,7 +72,7 @@ public class StaticFileHandler implements RequestHandler {
     }
 
     @Override
-    public Resource handle(CookieJar cookieJar, HttpServletRequest request) throws Exception {
+    public Resource handle(HttpServletRequest request) throws Exception {
         String resource = request.getRequestURI();
         String mimeType = MIME_TYPES.get(getExtension(resource));
 

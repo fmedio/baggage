@@ -27,7 +27,6 @@ package baggage.hypertoolkit;
 import baggage.Bag;
 import baggage.hypertoolkit.request.InvalidRequestException;
 import baggage.hypertoolkit.request.RequestParser;
-import baggage.hypertoolkit.security.CookieJar;
 import baggage.hypertoolkit.views.Resource;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,10 +39,10 @@ public abstract class Action<Request> implements RequestHandler {
     }
 
     @Override
-    public Resource handle(CookieJar cookieJar, HttpServletRequest request) throws InvalidRequestException {
+    public Resource handle(HttpServletRequest request) throws InvalidRequestException {
         Bag<String, String> parameters = parameterFactory.getParameters(request);
         Request query = makeRequestParser().parse(parameters);
-        return execute(cookieJar, query);
+        return execute(query);
     }
 
     @Override
@@ -51,7 +50,7 @@ public abstract class Action<Request> implements RequestHandler {
         return true;
     }
 
-    public abstract Resource execute(CookieJar cookieJar, Request request);
+    public abstract Resource execute(Request request);
 
     public abstract RequestParser<Request> makeRequestParser();
 }

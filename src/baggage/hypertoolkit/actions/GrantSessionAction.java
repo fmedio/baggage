@@ -18,14 +18,16 @@ import org.json.JSONObject;
 public class GrantSessionAction extends Action<GrantSessionRequest> {
     public static String ID = "session";
 
+    private CookieJar cookieJar;
     private AuthenticationService authenticationService;
 
-    public GrantSessionAction(AuthenticationService authenticationService) {
+    public GrantSessionAction(CookieJar cookieJar, AuthenticationService authenticationService) {
+        this.cookieJar = cookieJar;
         this.authenticationService = authenticationService;
     }
 
     @Override
-    public Resource execute(CookieJar cookieJar, GrantSessionRequest request) {
+    public Resource execute(GrantSessionRequest request) {
         AuthenticationResult result = authenticationService.authenticate(request.getIdentifier(), request.getPassword());
 
         if (result.isOk()) {

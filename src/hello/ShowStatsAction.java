@@ -26,7 +26,6 @@ package hello;
 
 import baggage.hypertoolkit.Action;
 import baggage.hypertoolkit.request.RequestParser;
-import baggage.hypertoolkit.security.CookieJar;
 import baggage.hypertoolkit.views.Resource;
 import baggage.hypertoolkit.views.TextResource;
 
@@ -34,7 +33,7 @@ public class ShowStatsAction extends Action<Period> {
     public static String ID = "showStats";
 
     @Override
-    public Resource execute(CookieJar cookieJar, Period period) {
+    public Resource execute(Period period) {
         return new TextResource("start: " + period.getStartYear() + ", end: " + period.getEndYear());
     }
 

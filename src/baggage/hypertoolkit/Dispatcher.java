@@ -29,7 +29,6 @@ import baggage.Clock;
 import baggage.Log;
 import baggage.SystemClock;
 import baggage.hypertoolkit.html.ErrorPage;
-import baggage.hypertoolkit.security.CookieJar;
 import baggage.hypertoolkit.views.Resource;
 
 import javax.servlet.ServletException;
@@ -39,13 +38,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.function.Supplier;
 
-public class Dispatcher<ServiceType extends BaseServices> extends HttpServlet {
+public class Dispatcher extends HttpServlet {
     private Clock clock;
-    private ServiceType services;
     private RouteFinder routeFinder;
 
-    public Dispatcher(ServiceType services, RouteFinder routeFinder) {
-        this.services = services;
+    public Dispatcher(RouteFinder routeFinder) {
         this.routeFinder = routeFinder;
         this.clock = new SystemClock();
     }
@@ -56,9 +53,8 @@ public class Dispatcher<ServiceType extends BaseServices> extends HttpServlet {
         RequestHandler requestHandler = f.get();
         Resource resource;
         try {
-            CookieJar cookieJar = new CookieJar(services.getName(), services.getSecretKey(), request, response);
             long before = clock.nowMillis();
-            resource = requestHandler.handle(cookieJar, request);
+            resource = requestHandler.handle(request);
             long elapsed = clock.nowMillis() - before;
             if (requestHandler.log()) {
                 Log.info(this, "Dispatched to " + requestHandler.getClass().getSimpleName() + " in " + elapsed + "ms");

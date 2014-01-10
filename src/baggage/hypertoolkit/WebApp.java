@@ -59,7 +59,7 @@ public class WebApp<T extends BaseServices> {
         contextHandler.setContextPath("/");
         server.setHandler(contextHandler);
 
-        Dispatcher dispatcher = new Dispatcher<T>(services, routeFinder);
+        Dispatcher dispatcher = new Dispatcher(routeFinder);
         contextHandler.addServlet(new ServletHolder(dispatcher), "/");
         server.setHandler(contextHandler);
 

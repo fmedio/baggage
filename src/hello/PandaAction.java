@@ -28,12 +28,11 @@ import baggage.Nil;
 import baggage.hypertoolkit.Action;
 import baggage.hypertoolkit.request.NilRequestParser;
 import baggage.hypertoolkit.request.RequestParser;
-import baggage.hypertoolkit.security.CookieJar;
 import baggage.hypertoolkit.views.Resource;
 
 public class PandaAction extends Action<Nil> {
     @Override
-    public Resource execute(CookieJar cookieJar, Nil aNul) {
+    public Resource execute(Nil aNul) {
         return new PandaPage();
     }
 

@@ -24,13 +24,12 @@
 
 package baggage.hypertoolkit;
 
-import baggage.hypertoolkit.security.CookieJar;
 import baggage.hypertoolkit.views.Resource;
 
 import javax.servlet.http.HttpServletRequest;
 
 public interface RequestHandler {
-    public abstract Resource handle(CookieJar cookieJar, HttpServletRequest request) throws Exception;
+    public abstract Resource handle(HttpServletRequest request) throws Exception;
 
     boolean log();
 }
