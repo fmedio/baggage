@@ -24,11 +24,16 @@
 
 package baggage.hypertoolkit.security;
 
+import com.google.common.collect.Lists;
+
 import javax.crypto.SecretKey;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class CookieJar {
     private static final String SESSION_COOKIE_FORMAT = "UUID: {0}, UserId: {1}";
@@ -40,7 +45,7 @@ public class CookieJar {
     public CookieJar(String appPrefix, SecretKey secretKey, Cookie[] cookies) {
         this.appPrefix = appPrefix;
         this.secretKey = secretKey;
-        this.cookies = cookies == null? new ArrayList<>() : Arrays.asList(cookies);
+        this.cookies = cookies == null? new ArrayList<>() : Lists.newArrayList(cookies);
     }
     public CookieJar(String appPrefix, SecretKey secretKey, HttpServletRequest request) {
         this(appPrefix, secretKey, request.getCookies());
@@ -51,11 +56,15 @@ public class CookieJar {
     }
 
     public void addEncryptedCookie(String key, String value) {
-        final String cookieName = appPrefix + "-" + key;
+        final String cookieName = cookieName(key);
         ClearText clearText = new ClearText(value.getBytes());
         CipherText cipherText = clearText.encrypt(secretKey);
         final Cookie cookie = new Baker().makeCookie(cookieName, cipherText.base64());
         cookies.add(cookie);
+    }
+
+    private String cookieName(String key) {
+        return appPrefix + "-" + key;
     }
 
     public void addEncryptedCookie(String key, long value) {
@@ -64,7 +73,7 @@ public class CookieJar {
 
     public Optional<String> stringValue(String key) {
         return cookies.stream()
-                .filter(c -> c.getName().equals(appPrefix + "-" + key))
+                .filter(c -> c.getName().equals(cookieName(key)))
                 .findFirst()
                 .map(c -> {
                     CipherText cipherText = new CipherText(c.getValue());
@@ -116,6 +125,8 @@ public class CookieJar {
     }
 
     public void invalidateSession() {
-        addEncryptedCookie(SESSION_KEY_NAME, "");
+        cookies.stream()
+                .filter(c -> cookieName(SESSION_KEY_NAME).equals(c.getName()))
+                .forEach(c -> c.setValue(""));
     }
 }

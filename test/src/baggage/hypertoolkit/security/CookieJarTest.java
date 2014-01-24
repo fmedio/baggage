@@ -27,29 +27,16 @@ package baggage.hypertoolkit.security;
 import baggage.BaseTestCase;
 import baggage.Fallible;
 import baggage.IntegrationTest;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.mockito.Mockito.*;
 
 @IntegrationTest
 public class CookieJarTest extends BaseTestCase {
-    private Map<String, Cookie> cookiesByName;
-    private HttpServletRequest request;
-    private HttpServletResponse response;
     private CookieJar cookieJar;
 
     public void testSessionCookie() throws Exception {
         cookieJar.grantSessionCookie(new Member(42));
 
-        assertTrue(cookiesByName.containsKey(SESSION_COOKIE_NAME));
         assertTrue(cookieJar.hasValidSession());
         assertEquals(42, cookieJar.currentPrincipal());
 
@@ -68,7 +55,7 @@ public class CookieJarTest extends BaseTestCase {
     }
 
     public void testCorruptedCookieValue() throws Exception {
-        cookiesByName.put(SESSION_COOKIE_NAME, new Cookie(SESSION_COOKIE_NAME, "not an encrypted string"));
+        cookieJar = new CookieJar(SESSION_COOKIE_NAME, secretKey, new Cookie[] {new Cookie(SESSION_COOKIE_NAME, "not an encrypted string")});
         assertFalse(cookieJar.hasValidSession());
     }
 
@@ -80,7 +67,7 @@ public class CookieJarTest extends BaseTestCase {
 
     public void testCookiesAreEncrypted() throws Exception {
         Cookie cookie = new Cookie("someKey", "this value is clearly not encrypted");
-        cookiesByName.put("someKey", cookie);
+        cookieJar = new CookieJar(SESSION_COOKIE_NAME, secretKey, new Cookie[] {cookie});
         assertFalse(cookieJar.stringValue("someKey").isPresent());
     }
 
@@ -93,34 +80,10 @@ public class CookieJarTest extends BaseTestCase {
         assertFalse(cookieJar.longValue("bar").isPresent());
     }
 
-    public void testHttpServletRequestHasNoCookies() throws Exception {
-        when(request.getCookies()).thenReturn(null);
-        final Optional<String> maybe = new CookieJar(APP_NAME, secretKey, request).stringValue("any string, really");
-        assertFalse(maybe.isPresent());
-    }
 
     @Override
     protected void setUp() throws Exception {
-        cookiesByName = new HashMap<String, Cookie>();
-        request = mock(HttpServletRequest.class);
-        response = mock(HttpServletResponse.class);
-
-        when(request.getCookies()).thenAnswer(new Answer<Cookie[]>() {
-            @Override
-            public Cookie[] answer(InvocationOnMock invocationOnMock) throws Throwable {
-                return cookiesByName.values().toArray(new Cookie[0]);
-            }
-        });
-
-        doAnswer(new Answer<Cookie>() {
-            @Override
-            public Cookie answer(InvocationOnMock invocationOnMock) throws Throwable {
-                Cookie cookie = (Cookie) invocationOnMock.getArguments()[0];
-                cookiesByName.put(cookie.getName(), cookie);
-                return cookie;
-            }
-        }).when(response).addCookie(any(Cookie.class));
-        cookieJar = new CookieJar(APP_NAME, secretKey, request);
+        cookieJar = new CookieJar(APP_NAME, secretKey, new Cookie[0]);
     }
 
     private class Member implements Principal {
