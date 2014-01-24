@@ -15,24 +15,30 @@ import baggage.hypertoolkit.views.JSONResponse;
 import baggage.hypertoolkit.views.Resource;
 import org.json.JSONObject;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 public class GrantSessionAction extends Action<GrantSessionRequest> {
     public static String ID = "session";
 
-    private CookieJar cookieJar;
     private AuthenticationService authenticationService;
 
-    public GrantSessionAction(CookieJar cookieJar, AuthenticationService authenticationService) {
-        this.cookieJar = cookieJar;
+    public GrantSessionAction(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
     }
 
     @Override
-    public Resource execute(GrantSessionRequest request) {
+    public Resource execute(HttpServletRequest servletRequest, GrantSessionRequest request) {
+        CookieJar cookieJar = new CookieJar(authenticationService.getAppPrefix(), authenticationService.getSecretKey(), servletRequest);
+        return execute(cookieJar, request);
+    }
+
+    public final Resource execute(CookieJar cookieJar, GrantSessionRequest request) {
         AuthenticationResult result = authenticationService.authenticate(request.getIdentifier(), request.getPassword());
 
         if (result.isOk()) {
             cookieJar.grantSessionCookie(result.getPrincipal());
-            return new JSONResponse(new JSONObject().put("success", true));
+            return new JSONResponse(new JSONObject().put("success", true), HttpServletResponse.SC_OK, cookieJar.getCookies());
         }
 
         return new JSONResponse(new JSONObject().put("success", false));

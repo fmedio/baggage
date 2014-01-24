@@ -29,6 +29,7 @@ import baggage.Bags;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -37,13 +38,20 @@ import java.io.PrintWriter;
 public class JSONResponse implements Resource {
     private Object o;
     private int httpStatus;
+    private final Cookie[] cookies;
 
-    public JSONResponse(JSONObject o) {
+    public JSONResponse(Object o) {
         this(o, HttpServletResponse.SC_OK);
     }
 
-    public JSONResponse(JSONObject o, int httpStatus) {
-        this((Object) o, httpStatus);
+    public JSONResponse(Object o, int httpStatus) {
+        this(o, httpStatus, new Cookie[0]);
+    }
+
+    public JSONResponse(Object o, int httpStatus, Cookie[] cookies) {
+        this.o = o;
+        this.httpStatus = httpStatus;
+        this.cookies = cookies;
     }
 
     public JSONResponse(JSONArray o) {
@@ -52,11 +60,6 @@ public class JSONResponse implements Resource {
 
     public JSONResponse(boolean b) {
         this(new Boolean(b), HttpServletResponse.SC_OK);
-    }
-
-    private JSONResponse(Object o, int httpStatus) {
-        this.o = o;
-        this.httpStatus = httpStatus;
     }
 
     public String getContentType() {

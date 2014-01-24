@@ -42,7 +42,7 @@ public abstract class Action<Request> implements RequestHandler {
     public Resource handle(HttpServletRequest request) throws InvalidRequestException {
         Bag<String, String> parameters = parameterFactory.getParameters(request);
         Request query = makeRequestParser().parse(parameters);
-        return execute(query);
+        return execute(request, query);
     }
 
     @Override
@@ -50,7 +50,7 @@ public abstract class Action<Request> implements RequestHandler {
         return true;
     }
 
-    public abstract Resource execute(Request request);
+    public abstract Resource execute(HttpServletRequest servletRequest, Request request);
 
     public abstract RequestParser<Request> makeRequestParser();
 }

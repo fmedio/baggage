@@ -30,9 +30,11 @@ import baggage.hypertoolkit.request.NilRequestParser;
 import baggage.hypertoolkit.request.RequestParser;
 import baggage.hypertoolkit.views.Resource;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class PandaAction extends Action<Nil> {
     @Override
-    public Resource execute(Nil aNul) {
+    public Resource execute(HttpServletRequest servletRequest, Nil aNul) {
         return new PandaPage();
     }
 

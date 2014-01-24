@@ -29,11 +29,13 @@ import baggage.hypertoolkit.request.RequestParser;
 import baggage.hypertoolkit.views.Resource;
 import baggage.hypertoolkit.views.TextResource;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class ShowStatsAction extends Action<Period> {
     public static String ID = "showStats";
 
     @Override
-    public Resource execute(Period period) {
+    public Resource execute(HttpServletRequest servletRequest, Period period) {
         return new TextResource("start: " + period.getStartYear() + ", end: " + period.getEndYear());
     }
 

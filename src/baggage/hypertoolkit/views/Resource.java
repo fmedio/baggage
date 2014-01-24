@@ -26,10 +26,15 @@ package baggage.hypertoolkit.views;
 
 import baggage.Bag;
 
+import javax.servlet.http.Cookie;
 import java.io.IOException;
 import java.io.OutputStream;
 
 public interface Resource {
+    public default Cookie[] cookies() {
+        return new Cookie[0];
+    }
+
     public int getHttpStatus();
 
     public String getContentType();

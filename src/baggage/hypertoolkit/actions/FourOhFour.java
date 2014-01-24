@@ -30,9 +30,11 @@ import baggage.hypertoolkit.request.RequestParser;
 import baggage.hypertoolkit.views.FourOhFourPage;
 import baggage.hypertoolkit.views.Resource;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class FourOhFour extends Action {
 
-    public Resource execute(Object query) {
+    public Resource execute(HttpServletRequest servletRequest, Object query) {
         return new FourOhFourPage();
     }
 

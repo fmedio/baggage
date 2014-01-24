@@ -4,6 +4,10 @@
 
 package baggage.hypertoolkit.security;
 
+import javax.crypto.SecretKey;
+
 public interface AuthenticationService {
     public AuthenticationResult authenticate(String identifier, String candidatePassword);
+    public String getAppPrefix();
+    public SecretKey getSecretKey();
 }

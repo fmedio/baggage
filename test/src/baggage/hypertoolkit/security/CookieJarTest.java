@@ -27,7 +27,6 @@ package baggage.hypertoolkit.security;
 import baggage.BaseTestCase;
 import baggage.Fallible;
 import baggage.IntegrationTest;
-import baggage.Maybe;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -36,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
@@ -73,30 +73,30 @@ public class CookieJarTest extends BaseTestCase {
     }
 
     public void testSetAndGet() throws Exception {
-        cookieJar.setString("someKey", "someValue");
-        assertEquals("someValue", cookieJar.getString("someKey").getValue());
-        assertFalse(cookieJar.getString("someOtherKey").hasValue());
+        cookieJar.addEncryptedCookie("someKey", "someValue");
+        assertEquals("someValue", cookieJar.stringValue("someKey").get());
+        assertFalse(cookieJar.stringValue("someOtherKey").isPresent());
     }
 
     public void testCookiesAreEncrypted() throws Exception {
         Cookie cookie = new Cookie("someKey", "this value is clearly not encrypted");
         cookiesByName.put("someKey", cookie);
-        assertFalse(cookieJar.getString("someKey").hasValue());
+        assertFalse(cookieJar.stringValue("someKey").isPresent());
     }
 
     public void testSetLong() throws Exception {
-        cookieJar.setLong("foo", 42l);
-        assertTrue(cookieJar.getLong("foo").hasValue());
-        assertEquals(42l, (long) cookieJar.getLong("foo").getValue());
+        cookieJar.addEncryptedCookie("foo", 42l);
+        assertTrue(cookieJar.longValue("foo").isPresent());
+        assertEquals(42l, (long) cookieJar.longValue("foo").get());
 
-        cookieJar.setString("bar", "not a long");
-        assertFalse(cookieJar.getLong("bar").hasValue());
+        cookieJar.addEncryptedCookie("bar", "not a long");
+        assertFalse(cookieJar.longValue("bar").isPresent());
     }
 
     public void testHttpServletRequestHasNoCookies() throws Exception {
         when(request.getCookies()).thenReturn(null);
-        final Maybe<String> maybe = new CookieJar(APP_NAME, secretKey, request, response).getString("any string, really");
-        assertFalse(maybe.hasValue());
+        final Optional<String> maybe = new CookieJar(APP_NAME, secretKey, request).stringValue("any string, really");
+        assertFalse(maybe.isPresent());
     }
 
     @Override
@@ -120,7 +120,7 @@ public class CookieJarTest extends BaseTestCase {
                 return cookie;
             }
         }).when(response).addCookie(any(Cookie.class));
-        cookieJar = new CookieJar(APP_NAME, secretKey, request, response);
+        cookieJar = new CookieJar(APP_NAME, secretKey, request);
     }
 
     private class Member implements Principal {

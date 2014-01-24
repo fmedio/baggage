@@ -28,15 +28,22 @@ import baggage.Bag;
 import baggage.Bags;
 import baggage.hypertoolkit.views.Resource;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 
 public class HttpRedirect<QueryType> implements Resource {
     private String target;
+    private Cookie[] cookies;
 
     public HttpRedirect(String target) {
+        this(target, new Cookie[0]);
+    }
+
+    public HttpRedirect(String target, Cookie[] cookies) {
         this.target = target;
+        this.cookies = cookies;
     }
 
     @Override
@@ -52,6 +59,11 @@ public class HttpRedirect<QueryType> implements Resource {
     @Override
     public Bag<String, String> extraHeaders() {
         return Bags.newBag("Location", target);
+    }
+
+    @Override
+    public Cookie[] cookies() {
+        return cookies;
     }
 
     @Override

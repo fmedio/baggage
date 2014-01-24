@@ -24,79 +24,76 @@
 
 package baggage.hypertoolkit.security;
 
-import baggage.Bag;
-import baggage.ListBag;
-import baggage.Maybe;
-
 import javax.crypto.SecretKey;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.text.MessageFormat;
-import java.util.UUID;
+import java.util.*;
 
 public class CookieJar {
     private static final String SESSION_COOKIE_FORMAT = "UUID: {0}, UserId: {1}";
     private String appPrefix;
     private SecretKey secretKey;
-    private HttpServletRequest request;
-    private final HttpServletResponse response;
     private static final String SESSION_KEY_NAME = "cookiejar";
+    private final List<Cookie> cookies;
 
-    public CookieJar(String appPrefix, SecretKey secretKey, HttpServletRequest request, HttpServletResponse response) {
+    public CookieJar(String appPrefix, SecretKey secretKey, Cookie[] cookies) {
         this.appPrefix = appPrefix;
         this.secretKey = secretKey;
-        this.request = request;
-        this.response = response;
+        this.cookies = cookies == null? new ArrayList<>() : Arrays.asList(cookies);
+    }
+    public CookieJar(String appPrefix, SecretKey secretKey, HttpServletRequest request) {
+        this(appPrefix, secretKey, request.getCookies());
     }
 
-    public void setString(String key, String value) {
+    public Cookie[] getCookies() {
+        return cookies.toArray(new Cookie[0]);
+    }
+
+    public void addEncryptedCookie(String key, String value) {
         final String cookieName = appPrefix + "-" + key;
         ClearText clearText = new ClearText(value.getBytes());
         CipherText cipherText = clearText.encrypt(secretKey);
         final Cookie cookie = new Baker().makeCookie(cookieName, cipherText.base64());
-        response.addCookie(cookie);
+        cookies.add(cookie);
     }
 
-    public Maybe<String> getString(String key) {
-        final Cookie cookie = parseCookies().get(appPrefix + "-" + key);
-        if (cookie == null) {
-            return new Maybe<String>();
-        }
+    public void addEncryptedCookie(String key, long value) {
+        addEncryptedCookie(key, Long.toString(value));
+    }
 
-        CipherText cipherText = new CipherText(cookie.getValue());
+    public Optional<String> stringValue(String key) {
+        return cookies.stream()
+                .filter(c -> c.getName().equals(appPrefix + "-" + key))
+                .findFirst()
+                .map(c -> {
+                    CipherText cipherText = new CipherText(c.getValue());
+                    try {
+                        ClearText clearText = cipherText.decrypt(secretKey);
+                        return clearText.toString();
+                    } catch (Exception e) {
+                        return "";
+                    }
+                });
+    }
+
+    public Optional<Long> longValue(String key) {
         try {
-            ClearText clearText = cipherText.decrypt(secretKey);
-            return new Maybe<String>(clearText.toString());
-        } catch (Exception e) {
-            return new Maybe<String>();
+            return stringValue(key).map(v -> Long.parseLong(v));
+        } catch (Throwable t) {
+            return Optional.empty();
         }
-    }
-
-
-    public void setLong(String key, long value) {
-        setString(key, Long.toString(value));
-    }
-
-    public Maybe<Long> getLong(String key) {
-        final Maybe<String> string = getString(key);
-        if (string.hasValue()) {
-            try {
-                return new Maybe<Long>(Long.parseLong(string.getValue()));
-            } catch (Exception e) {
-            }
-        }
-        return new Maybe<Long>();
     }
 
     public long currentPrincipal() throws SecurityException {
-        final Maybe<String> contents = getString(SESSION_KEY_NAME);
-        if (!contents.hasValue()) {
+        final Optional<String> contents = stringValue(SESSION_KEY_NAME);
+
+        if (!contents.isPresent()) {
             throw new SecurityException();
         }
 
         try {
-            Object[] objects = new MessageFormat(SESSION_COOKIE_FORMAT).parse(contents.getValue());
+            Object[] objects = new MessageFormat(SESSION_COOKIE_FORMAT).parse(contents.get());
             return Long.parseLong((String) objects[1]);
         } catch (Throwable t) {
             throw new SecurityException();
@@ -115,21 +112,10 @@ public class CookieJar {
 
     public void grantSessionCookie(Principal principal) {
         String value = MessageFormat.format(SESSION_COOKIE_FORMAT, UUID.randomUUID().toString(), principal.getId());
-        setString(SESSION_KEY_NAME, value);
+        addEncryptedCookie(SESSION_KEY_NAME, value);
     }
 
     public void invalidateSession() {
-        setString(SESSION_KEY_NAME, "");
-    }
-
-    private Bag<String, Cookie> parseCookies() {
-        final ListBag<String, Cookie> bag = new ListBag<String, Cookie>();
-
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                bag.put(cookie.getName(), cookie);
-            }
-        }
-        return bag;
+        addEncryptedCookie(SESSION_KEY_NAME, "");
     }
 }
