@@ -36,9 +36,11 @@ import java.util.function.Supplier;
 public class RouteFinder {
     private Map<String, Supplier<RequestHandler>> map;
     private Supplier<RequestHandler> defaultHandler;
+    private String webDir;
 
-    public RouteFinder(Supplier<RequestHandler> defaultHandler) {
+    public RouteFinder(Supplier<RequestHandler> defaultHandler, String webDir) {
         this.defaultHandler = defaultHandler;
+        this.webDir = webDir;
         map = new HashMap<>();
     }
 
@@ -53,7 +55,7 @@ public class RouteFinder {
 
         for (String extension : StaticFileHandler.MIME_TYPES.keySet()) {
             if (name.endsWith(extension)) {
-                return() -> new StaticFileHandler("web");
+                return() -> new StaticFileHandler(webDir);
             }
         }
 

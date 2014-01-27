@@ -32,13 +32,11 @@ import org.eclipse.jetty.servlet.ServletHolder;
 
 import java.util.function.Supplier;
 
-public class WebApp<T extends BaseServices> {
-    private T services;
+public class WebApp {
     private RouteFinder routeFinder;
 
-    public WebApp(T app, Supplier<RequestHandler> defaultHandler) {
-        this.services = app;
-        this.routeFinder = new RouteFinder(defaultHandler);
+    public WebApp(Supplier<RequestHandler> defaultHandler, String webDir) {
+        this.routeFinder = new RouteFinder(defaultHandler, webDir);
     }
 
     public void route(String route, Supplier<RequestHandler> handler) {

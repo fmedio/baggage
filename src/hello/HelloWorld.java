@@ -29,9 +29,8 @@ import baggage.hypertoolkit.WebApp;
 public class HelloWorld {
     public static void main(String[] args) throws Exception {
         // Your production app should load this from a secure location
-        MyServices myServices = new MyServices();
 
-        WebApp<MyServices> webApp = new WebApp<>(myServices, () -> new PandaAction());
+        WebApp webApp = new WebApp(() -> new PandaAction(), "web");
         webApp.route("panda", () -> new PandaAction());
         webApp.route(ShowStatsAction.ID, () -> new ShowStatsAction());
         webApp.start(8080);
