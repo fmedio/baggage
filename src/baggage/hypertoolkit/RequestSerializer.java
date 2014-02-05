@@ -1,11 +1,12 @@
 package baggage.hypertoolkit;
 
+import baggage.Nil;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Created by fmedio on 1/29/14.
@@ -48,6 +49,18 @@ class StringSerializer implements ParamSerializer<String> {
     }
 }
 
+class NilSerializer implements ParamSerializer<Nil> {
+    @Override
+    public Nil parse(String s) {
+        return new Nil();
+    }
+
+    @Override
+    public String toString(Nil tee) {
+        return null;
+    }
+}
+
 interface ParamSerializer<T> {
     public T parse(String s);
     public String toString(T tee);
@@ -58,39 +71,83 @@ public class RequestSerializer {
 
     static {
         SERIALIZERS.put(Integer.TYPE, IntSerializer.class);
+        SERIALIZERS.put(Integer.class, IntSerializer.class);
         SERIALIZERS.put(Long.TYPE, LongSerializer.class);
+        SERIALIZERS.put(Long.class, LongSerializer.class);
         SERIALIZERS.put(String.class, StringSerializer.class);
     }
 
+    public <T> Multimap<String, String> serialize(T tee) {
+        registerCustomSerializers(tee.getClass());
+        ArrayListMultimap<String, String> map = ArrayListMultimap.create();
+        getParamFields(tee.getClass()).forEach(f -> {
+            ParamSerializer serializer = makeSerializer(f.getType());
+            String name = f.getName();
+            Object o = null;
+            try {
+                o = f.get(tee);
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
+            }
+            map.put(name, serializer.toString(o));
+        });
+        return map;
+    }
+
     public <T> T deserialize(Multimap<String, String> map, Class<T> klass) {
+        registerCustomSerializers(klass);
         try {
+            if (SERIALIZERS.keySet().contains(klass)) {
+                if (map.isEmpty())
+                    throw new RuntimeException("No argument to deserialize!");
+                return (T) makeSerializer(klass).parse(map.values().iterator().next());
+            }
+
             T tee = klass.newInstance();
 
-            Arrays.stream(klass.getFields())
-                    .filter(f -> Arrays.stream(f.getAnnotations()).anyMatch(a -> a.annotationType().equals(UrlParam.class)))
-                    .forEach(f -> {
-                        ParamSerializer serializer = makeSerializer(f);
-                        if (serializer == null)
-                            throw new RuntimeException("No serializer for class " + f.getType().toString());
-                        String value = map.get(f.getName()).iterator().next();
-                        if (value != null) {
-                            Object o = serializer.parse(value);
-                            try {
-                                f.set(tee, o);
-                            } catch (IllegalAccessException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    });
+            getParamFields(klass).forEach(f -> {
+                ParamSerializer serializer = makeSerializer(f.getType());
+                Collection<String> values = map.get(f.getName());
+                if (values.size() != 0) {
+                    Object o = serializer.parse(values.iterator().next());
+                    try {
+                        f.set(tee, o);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
             return tee;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private ParamSerializer makeSerializer(Field f) {
+    private <T> Stream<Field> getParamFields(Class<T> klass) {
+        return Arrays.stream(klass.getFields())
+                .filter(f -> Arrays.stream(f.getAnnotations()).anyMatch(a -> a.annotationType().equals(UrlParam.class)));
+    }
+
+    private void registerCustomSerializers(Class klass) {
+        Stream<Field> paramFields = getParamFields(klass);
+        Iterator<Field> iterator = paramFields.iterator();
+        while (iterator.hasNext()) {
+            Field field = iterator.next();
+            if (! SERIALIZERS.keySet().contains(field.getType())) {
+                UrlParam annotation = field.getAnnotation(UrlParam.class);
+                Class<? extends ParamSerializer> serializer = annotation.serializer();
+                Class customType = field.getType();
+                SERIALIZERS.put(customType, serializer);
+            }
+        }
+    }
+
+    private ParamSerializer makeSerializer(Class klass) {
         try {
-            return SERIALIZERS.get(f.getType()).newInstance();
+            Class serializer = SERIALIZERS.get(klass);
+            if (serializer == null)
+                throw new RuntimeException("No serializer for class " + klass.toString());
+            return (ParamSerializer) serializer.newInstance();
         } catch (Throwable t) {
             throw new RuntimeException(t);
         }

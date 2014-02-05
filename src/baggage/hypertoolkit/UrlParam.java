@@ -10,4 +10,6 @@ import java.lang.annotation.Target;
 */
 @Target(value = ElementType.FIELD)
 @Retention(value = RetentionPolicy.RUNTIME)
-@interface UrlParam {}
+public @interface UrlParam {
+    public Class<? extends ParamSerializer> serializer() default NilSerializer.class;
+}
