@@ -24,6 +24,8 @@
 
 package baggage;
 
+import com.google.common.collect.Multimap;
+
 import java.util.*;
 
 public abstract class AbstractBag<C extends Collection<V>, K, V> implements Bag<K, V> {
@@ -180,4 +182,13 @@ public abstract class AbstractBag<C extends Collection<V>, K, V> implements Bag<
             }
         };
     }
+
+    @Override
+    public Multimap<K, V> asMultiMap() {
+        Multimap<K, V> map = makeEmptyMap();
+        entries().forEach(e -> map.put(e.getKey(), e.getValue()));
+        return map;
+    }
+
+    protected abstract Multimap<K,V> makeEmptyMap();
 }

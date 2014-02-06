@@ -4,9 +4,14 @@
 
 package baggage.hypertoolkit.request;
 
+import baggage.hypertoolkit.UrlParam;
+
 public class GrantSessionRequest {
-    private String identifier;
-    private String password;
+    @UrlParam
+    public String identifier;
+
+    @UrlParam
+    public String password;
 
     public GrantSessionRequest(String identifier, String password) {
         this.identifier = identifier;

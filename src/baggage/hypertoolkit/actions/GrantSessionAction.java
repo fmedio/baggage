@@ -4,10 +4,8 @@
 
 package baggage.hypertoolkit.actions;
 
-import baggage.hypertoolkit.Action;
+import baggage.hypertoolkit.TypedAction;
 import baggage.hypertoolkit.request.GrantSessionRequest;
-import baggage.hypertoolkit.request.GrantSessionRequestParser;
-import baggage.hypertoolkit.request.RequestParser;
 import baggage.hypertoolkit.security.AuthenticationResult;
 import baggage.hypertoolkit.security.AuthenticationService;
 import baggage.hypertoolkit.security.CookieJar;
@@ -18,13 +16,18 @@ import org.json.JSONObject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class GrantSessionAction extends Action<GrantSessionRequest> {
+public class GrantSessionAction extends TypedAction<GrantSessionRequest> {
     public static String ID = "session";
 
     private AuthenticationService authenticationService;
 
     public GrantSessionAction(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
+    }
+
+    @Override
+    protected Class<GrantSessionRequest> requestClass() {
+        return GrantSessionRequest.class;
     }
 
     @Override
@@ -42,10 +45,5 @@ public class GrantSessionAction extends Action<GrantSessionRequest> {
         }
 
         return new JSONResponse(new JSONObject().put("success", false));
-    }
-
-    @Override
-    public RequestParser<GrantSessionRequest> makeRequestParser() {
-        return new GrantSessionRequestParser();
     }
 }

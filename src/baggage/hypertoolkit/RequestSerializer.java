@@ -24,6 +24,18 @@ class IntSerializer implements ParamSerializer<Integer> {
     }
 }
 
+class DoubleSerializer implements ParamSerializer<Double> {
+    @Override
+    public Double parse(String s) {
+        return Double.parseDouble(s);
+    }
+
+    @Override
+    public String toString(Double tee) {
+        return tee.toString();
+    }
+}
+
 class LongSerializer implements ParamSerializer<Long> {
     @Override
     public Long parse(String s) {
@@ -74,6 +86,8 @@ public class RequestSerializer {
         SERIALIZERS.put(Integer.class, IntSerializer.class);
         SERIALIZERS.put(Long.TYPE, LongSerializer.class);
         SERIALIZERS.put(Long.class, LongSerializer.class);
+        SERIALIZERS.put(Double.TYPE, DoubleSerializer.class);
+        SERIALIZERS.put(Double.class, DoubleSerializer.class);
         SERIALIZERS.put(String.class, StringSerializer.class);
     }
 

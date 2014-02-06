@@ -24,10 +24,13 @@
 
 package baggage;
 
+import com.google.common.collect.Multimap;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+// TODO remove, use MultiMap instead
 public interface Bag<K, V> {
     public int size();
 
@@ -52,4 +55,6 @@ public interface Bag<K, V> {
     public Set<K> keySet();
 
     public Iterable<Map.Entry<K, V>> entries();
+
+    public Multimap<K, V> asMultiMap();
 }

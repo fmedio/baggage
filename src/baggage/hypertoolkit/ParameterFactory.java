@@ -32,15 +32,15 @@ import java.util.Enumeration;
 
 public class ParameterFactory {
     public Bag<String, String> getParameters(HttpServletRequest servletRequest) {
-        Bag<String, String> parameters = new ListBag<String, String>();
+        Bag<String, String> map = new ListBag<>();
         Enumeration names = servletRequest.getParameterNames();
         while (names.hasMoreElements()) {
             String name = (String) names.nextElement();
             for (String value : servletRequest.getParameterValues(name)) {
-                parameters.put(name, value);
+                map.put(name, value);
             }
         }
-        return parameters;
+        return map;
     }
 
     public Bag<String, String> getHeaders(HttpServletRequest servletRequest) {

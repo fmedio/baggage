@@ -24,6 +24,9 @@
 
 package baggage;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +41,13 @@ public class ListBag<K, V> extends AbstractBag<List<V>, K, V> {
     }
 
     @Override
+    protected Multimap<K, V> makeEmptyMap() {
+        return ArrayListMultimap.create();
+    }
+
+    @Override
     protected List<V> newCollection() {
         return new ArrayList<V>();
     }
+
 }

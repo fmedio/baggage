@@ -24,24 +24,23 @@
 
 package hello;
 
-import baggage.hypertoolkit.Action;
-import baggage.hypertoolkit.request.RequestParser;
+import baggage.hypertoolkit.TypedAction;
 import baggage.hypertoolkit.views.Resource;
 import baggage.hypertoolkit.views.TextResource;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class ShowStatsAction extends Action<Period> {
+public class ShowStatsAction extends TypedAction<Period> {
     public static String ID = "showStats";
+
+    @Override
+    protected Class<Period> requestClass() {
+        return Period.class;
+    }
 
     @Override
     public Resource execute(HttpServletRequest servletRequest, Period period) {
         return new TextResource("start: " + period.getStartYear() + ", end: " + period.getEndYear());
-    }
-
-    @Override
-    public RequestParser<Period> makeRequestParser() {
-        return new PeriodRequestParser();
     }
 
 }

@@ -24,6 +24,9 @@
 
 package baggage;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 import java.io.Serializable;
 import java.util.LinkedHashSet;
 
@@ -31,5 +34,10 @@ public class SetBag<K, V> extends AbstractBag<LinkedHashSet<V>, K, V> implements
     @Override
     protected LinkedHashSet<V> newCollection() {
         return new LinkedHashSet<V>();
+    }
+
+    @Override
+    protected Multimap<K, V> makeEmptyMap() {
+        return HashMultimap.create();
     }
 }

@@ -24,9 +24,14 @@
 
 package hello;
 
+import baggage.hypertoolkit.UrlParam;
+
 public class Period {
-    private int startYear;
-    private int endYear;
+    @UrlParam
+    public int startYear;
+
+    @UrlParam
+    public int endYear;
 
     public Period(int startYear, int endYear) {
         this.startYear = startYear;
