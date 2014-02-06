@@ -24,22 +24,21 @@
 
 package baggage.hypertoolkit.actions;
 
-import baggage.hypertoolkit.Action;
-import baggage.hypertoolkit.request.NilRequestParser;
-import baggage.hypertoolkit.request.RequestParser;
+import baggage.Nil;
+import baggage.hypertoolkit.TypedAction;
 import baggage.hypertoolkit.views.FourOhFourPage;
 import baggage.hypertoolkit.views.Resource;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class FourOhFour extends Action {
+public class FourOhFour extends TypedAction<Nil> {
+    @Override
+    protected Class<Nil> requestClass() {
+        return Nil.class;
+    }
 
-    public Resource execute(HttpServletRequest servletRequest, Object query) {
+    @Override
+    public Resource execute(HttpServletRequest servletRequest, Nil nil) {
         return new FourOhFourPage();
     }
-
-    public RequestParser makeRequestParser() {
-        return new NilRequestParser();
-    }
-
 }

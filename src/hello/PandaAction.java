@@ -25,22 +25,19 @@
 package hello;
 
 import baggage.Nil;
-import baggage.hypertoolkit.Action;
-import baggage.hypertoolkit.request.NilRequestParser;
-import baggage.hypertoolkit.request.RequestParser;
+import baggage.hypertoolkit.TypedAction;
 import baggage.hypertoolkit.views.Resource;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class PandaAction extends Action<Nil> {
+public class PandaAction extends TypedAction<Nil> {
+    @Override
+    protected Class<Nil> requestClass() {
+        return Nil.class;
+    }
+
     @Override
     public Resource execute(HttpServletRequest servletRequest, Nil aNul) {
         return new PandaPage();
     }
-
-    @Override
-    public RequestParser<Nil> makeRequestParser() {
-        return new NilRequestParser();
-    }
-
 }

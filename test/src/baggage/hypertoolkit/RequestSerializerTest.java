@@ -67,6 +67,10 @@ public class RequestSerializerTest extends TestCase {
         assertEquals(42, o.foo.value);
     }
 
+    public void testOptionalParameter() {
+        fail("Implement me");
+    }
+
     public void testSerialize() {
         Panda panda = new Panda();
         CustomType foo = new CustomType();
