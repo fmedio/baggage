@@ -24,7 +24,6 @@
 
 package hello;
 
-import baggage.Bag;
 import baggage.hypertoolkit.html.Includes;
 import baggage.hypertoolkit.html.Link;
 import baggage.hypertoolkit.html.Renderable;
@@ -54,8 +53,7 @@ public class PandaPage extends Page {
     }
 
     private Renderable makeLink() {
-        Bag<String, String> parameters = new PeriodRequestParser().toParameters(new Period(2001, 2008));
-        return new Link(ShowStatsAction.ID, parameters).add("Link to canned statistics");
+        return new Link(ShowStatsAction.ID).add("Link");
     }
 
     @Override
