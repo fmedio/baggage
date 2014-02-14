@@ -24,7 +24,14 @@
 
 package baggage;
 
+import com.google.common.collect.Multimap;
+
 public class Bags {
+    public static <K, V> Bag<K, V> fromMultimap(Multimap<K, V> map) {
+        Bag<K, V> bag = new SetBag<>();
+        map.entries().forEach(e -> bag.put(e.getKey(), e.getValue()));
+        return bag;
+    }
 
     public static <K, V> Bag<K, V> newBag() {
         Bag<K, V> bag = new ListBag<K, V>();
