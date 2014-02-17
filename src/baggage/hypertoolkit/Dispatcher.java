@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 public class Dispatcher extends HttpServlet {
@@ -63,6 +64,9 @@ public class Dispatcher extends HttpServlet {
             Log.error(requestHandler, "Error executing " + requestHandler.getClass().getSimpleName(), t);
             resource = new ErrorPage(t);
         }
+
+        Arrays.stream(resource.cookies()).forEach(c -> response.addCookie(c));
+
         response.setContentType(resource.getContentType());
         response.setStatus(resource.getHttpStatus());
         Bag<String, String> extraHeaders = resource.extraHeaders();
@@ -71,6 +75,7 @@ public class Dispatcher extends HttpServlet {
                 response.addHeader(headerName, value);
             }
         }
+
 
         ClosingGuardStream outputStream = new ClosingGuardStream(response.getOutputStream());
         resource.render(outputStream);
