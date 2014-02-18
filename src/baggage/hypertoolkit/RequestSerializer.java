@@ -5,7 +5,10 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 /**
@@ -92,7 +95,6 @@ public class RequestSerializer {
     }
 
     public <T> Multimap<String, String> serialize(T tee) {
-        registerCustomSerializers(tee.getClass());
         ArrayListMultimap<String, String> map = ArrayListMultimap.create();
         getParamFields(tee.getClass()).forEach(f -> {
             ParamSerializer serializer = makeSerializer(f.getType());
@@ -109,7 +111,6 @@ public class RequestSerializer {
     }
 
     public <T> T deserialize(Multimap<String, String> map, Class<T> klass) {
-        registerCustomSerializers(klass);
         try {
             if (SERIALIZERS.keySet().contains(klass)) {
                 if (map.isEmpty())
@@ -140,20 +141,6 @@ public class RequestSerializer {
     private <T> Stream<Field> getParamFields(Class<T> klass) {
         return Arrays.stream(klass.getFields())
                 .filter(f -> Arrays.stream(f.getAnnotations()).anyMatch(a -> a.annotationType().equals(UrlParam.class)));
-    }
-
-    private void registerCustomSerializers(Class klass) {
-        Stream<Field> paramFields = getParamFields(klass);
-        Iterator<Field> iterator = paramFields.iterator();
-        while (iterator.hasNext()) {
-            Field field = iterator.next();
-            if (! SERIALIZERS.keySet().contains(field.getType())) {
-                UrlParam annotation = field.getAnnotation(UrlParam.class);
-                Class<? extends ParamSerializer> serializer = annotation.serializer();
-                Class customType = field.getType();
-                SERIALIZERS.put(customType, serializer);
-            }
-        }
     }
 
     private ParamSerializer makeSerializer(Class klass) {
