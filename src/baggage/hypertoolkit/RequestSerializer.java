@@ -52,7 +52,6 @@ class LongSerializer implements ParamSerializer<Long> {
 }
 
 class StringSerializer implements ParamSerializer<String> {
-
     @Override
     public String parse(String s) {
         return s;
@@ -61,6 +60,18 @@ class StringSerializer implements ParamSerializer<String> {
     @Override
     public String toString(String tee) {
         return tee;
+    }
+}
+
+class BooleanSerializer implements ParamSerializer<Boolean> {
+    @Override
+    public Boolean parse(String s) {
+        return Boolean.parseBoolean(s);
+    }
+
+    @Override
+    public String toString(Boolean tee) {
+        return tee.toString();
     }
 }
 
@@ -85,12 +96,15 @@ public class RequestSerializer {
     private static Map<Class, Class<? extends ParamSerializer>> SERIALIZERS = new HashMap<>();
 
     static {
+        SERIALIZERS.put(Nil.class, NilSerializer.class);
         SERIALIZERS.put(Integer.TYPE, IntSerializer.class);
         SERIALIZERS.put(Integer.class, IntSerializer.class);
         SERIALIZERS.put(Long.TYPE, LongSerializer.class);
         SERIALIZERS.put(Long.class, LongSerializer.class);
         SERIALIZERS.put(Double.TYPE, DoubleSerializer.class);
         SERIALIZERS.put(Double.class, DoubleSerializer.class);
+        SERIALIZERS.put(Boolean.TYPE, BooleanSerializer.class);
+        SERIALIZERS.put(Boolean.class, BooleanSerializer.class);
         SERIALIZERS.put(String.class, StringSerializer.class);
     }
 
@@ -113,9 +127,7 @@ public class RequestSerializer {
     public <T> T deserialize(Multimap<String, String> map, Class<T> klass) {
         try {
             if (SERIALIZERS.keySet().contains(klass)) {
-                if (map.isEmpty())
-                    throw new RuntimeException("No argument to deserialize!");
-                return (T) makeSerializer(klass).parse(map.values().iterator().next());
+                return (T) makeSerializer(klass).parse(map.values().stream().findFirst().orElse(""));
             }
 
             T tee = klass.newInstance();
