@@ -24,7 +24,9 @@
 
 package baggage;
 
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Log {
     public static void error(Object source, String message, Throwable throwable) {
@@ -52,42 +54,11 @@ public class Log {
     }
 
     private static Logger getLogger(Object source) {
-        if ("true".equals(System.getProperty("ashcroft"))) {
-            return new Logger("dumb") {
-                @Override
-                public void info(Object message) {
-                }
-
-                @Override
-                public void info(Object message, Throwable t) {
-                }
-
-                @Override
-                public void debug(Object message) {
-                }
-
-                @Override
-                public void error(Object message, Throwable t) {
-                }
-
-                @Override
-                public void error(Object message) {
-                }
-
-                @Override
-                public void fatal(Object message, Throwable t) {
-                }
-            };
-        }
-
-        /**
-         * For those absurd statics
-         */
         if (source instanceof Class) {
-            return Logger.getLogger((Class) source);
+            return LogManager.getLogger((Class) source);
         }
 
-        return Logger.getLogger(source.getClass());
+        return LogManager.getLogger(source.getClass());
     }
 
     public static void fatal(Object source, String s, Exception e) {

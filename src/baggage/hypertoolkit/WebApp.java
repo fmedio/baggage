@@ -26,7 +26,7 @@ package baggage.hypertoolkit;
 
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
@@ -45,7 +45,7 @@ public class WebApp {
 
     public void start(int httpPort) {
         Server server = new Server();
-        Connector connector = new SelectChannelConnector();
+        ServerConnector connector = new ServerConnector(server);
         connector.setPort(httpPort);
         connector.setHost("0.0.0.0");
 
