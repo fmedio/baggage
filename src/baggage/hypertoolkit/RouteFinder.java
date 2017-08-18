@@ -27,6 +27,7 @@ package baggage.hypertoolkit;
 import baggage.Log;
 import baggage.hypertoolkit.actions.FourOhFour;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jetty.http.HttpMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class RouteFinder {
-    private Map<String, Supplier<RequestHandler>> map;
+    private Map<Key, Supplier<RequestHandler>> map;
     private Supplier<RequestHandler> defaultHandler;
     private String webDir;
 
@@ -44,14 +45,13 @@ public class RouteFinder {
         map = new HashMap<>();
     }
 
-    public void route(String name, Supplier<RequestHandler> handler) {
-        map.put(name, handler);
+    public void route(HttpMethod method, String route, Supplier<RequestHandler> handler) {
+        map.put(new Key(method, route), handler);
     }
 
     public Supplier<RequestHandler> resolve(HttpServletRequest request) {
         String name = request.getRequestURI()
-                .replaceAll("^" + request.getServletPath() + "/", "")
-                .replaceAll("^/", "");
+                .replaceAll("^" + request.getServletPath() + "/", "");
 
         for (String extension : StaticFileHandler.MIME_TYPES.keySet()) {
             if (name.endsWith(extension)) {
@@ -62,12 +62,42 @@ public class RouteFinder {
         if (StringUtils.isEmpty(name)) {
             return defaultHandler;
         }
-        if (map.containsKey(name)) {
-            return map.get(name);
+
+        Key key = new Key(HttpMethod.fromString(request.getMethod().toUpperCase()), name);
+        if (map.containsKey(key)) {
+            return map.get(key);
+
         } else {
-            Log.debug(this, "404: " + name);
+            Log.debug(this, "404: " + key.method + " " + name);
             return () -> new FourOhFour();
         }
     }
 
+    private static class Key {
+        private HttpMethod method;
+        private String route;
+
+        public Key(HttpMethod method, String route) {
+            this.method = method;
+            this.route = route;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Key key = (Key) o;
+
+            if (method != key.method) return false;
+            return route.equals(key.route);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = method.hashCode();
+            result = 31 * result + route.hashCode();
+            return result;
+        }
+    }
 }

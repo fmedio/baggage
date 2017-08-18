@@ -26,8 +26,9 @@ package baggage.hypertoolkit.views;
 
 import baggage.Bag;
 import baggage.Bags;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -35,31 +36,25 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-public class JSONResponse implements Resource {
-    private Object o;
+public class JsonResource implements Resource {
+    private JsonElement o;
     private int httpStatus;
     private final Cookie[] cookies;
+    private Gson gson;
 
-    public JSONResponse(Object o) {
+    public JsonResource(JsonElement o) {
         this(o, HttpServletResponse.SC_OK);
     }
 
-    public JSONResponse(Object o, int httpStatus) {
+    public JsonResource(JsonElement o, int httpStatus) {
         this(o, httpStatus, new Cookie[0]);
     }
 
-    public JSONResponse(Object o, int httpStatus, Cookie[] cookies) {
+    public JsonResource(JsonElement o, int httpStatus, Cookie[] cookies) {
         this.o = o;
         this.httpStatus = httpStatus;
         this.cookies = cookies;
-    }
-
-    public JSONResponse(JSONArray o) {
-        this(o, HttpServletResponse.SC_OK);
-    }
-
-    public JSONResponse(boolean b) {
-        this(new Boolean(b), HttpServletResponse.SC_OK);
+        gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
     public String getContentType() {
@@ -74,13 +69,14 @@ public class JSONResponse implements Resource {
         return Bags.newBag();
     }
 
+    @Override
+    public Cookie[] cookies() {
+        return cookies;
+    }
+
     public void render(OutputStream outputStream) throws IOException {
         PrintWriter pw = new PrintWriter(outputStream);
-        if (o instanceof JSONObject) {
-            pw.println(((JSONObject) o).toString(4));
-        } else {
-            pw.println(o.toString());
-        }
+        pw.print(gson.toJson(o));
         pw.flush();
     }
 }

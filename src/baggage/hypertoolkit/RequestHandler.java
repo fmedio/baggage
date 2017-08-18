@@ -29,7 +29,9 @@ import baggage.hypertoolkit.views.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 public interface RequestHandler {
-    public abstract Resource handle(HttpServletRequest request) throws Exception;
+    Resource handle(HttpServletRequest request) throws Exception;
 
-    boolean log();
+    default boolean log() {
+        return true;
+    }
 }

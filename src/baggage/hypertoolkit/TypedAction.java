@@ -25,10 +25,5 @@ public abstract class TypedAction<Request> implements RequestHandler {
         return execute(servletRequest, request);
     }
 
-    @Override
-    public boolean log() {
-        return true;
-    }
-
     public abstract Resource execute(HttpServletRequest servletRequest, Request request);
 }

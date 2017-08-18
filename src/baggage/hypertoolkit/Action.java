@@ -45,11 +45,6 @@ public abstract class Action<Request> implements RequestHandler {
         return execute(request, query);
     }
 
-    @Override
-    public boolean log() {
-        return true;
-    }
-
     public abstract Resource execute(HttpServletRequest servletRequest, Request request);
 
     public abstract RequestParser<Request> makeRequestParser();

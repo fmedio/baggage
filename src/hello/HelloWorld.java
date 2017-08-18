@@ -25,14 +25,15 @@
 package hello;
 
 import baggage.hypertoolkit.WebApp;
+import org.eclipse.jetty.http.HttpMethod;
 
 public class HelloWorld {
     public static void main(String[] args) throws Exception {
         // Your production app should load this from a secure location
 
-        WebApp webApp = new WebApp(() -> new PandaAction(), "web");
-        webApp.route("panda", () -> new PandaAction());
-        webApp.route(ShowStatsAction.ID, () -> new ShowStatsAction());
+        WebApp webApp = new WebApp("web", () -> new PandaAction());
+        webApp.route(HttpMethod.GET, "panda", () -> new PandaAction());
+        webApp.route(HttpMethod.GET, ShowStatsAction.ID, () -> new ShowStatsAction());
         webApp.start(8080);
     }
 }

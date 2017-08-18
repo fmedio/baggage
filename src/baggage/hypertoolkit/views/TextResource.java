@@ -34,9 +34,16 @@ import java.io.OutputStreamWriter;
 
 public class TextResource implements Resource {
     private String text;
+    private int httpStatus;
+
 
     public TextResource(String text) {
+        this(text, HttpServletResponse.SC_OK);
+    }
+
+    public TextResource(String text, int httpStatus) {
         this.text = text;
+        this.httpStatus = httpStatus;
     }
 
     @Override

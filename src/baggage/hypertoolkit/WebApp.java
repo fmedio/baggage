@@ -24,6 +24,7 @@
 
 package baggage.hypertoolkit;
 
+import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -35,12 +36,12 @@ import java.util.function.Supplier;
 public class WebApp {
     private RouteFinder routeFinder;
 
-    public WebApp(Supplier<RequestHandler> defaultHandler, String webDir) {
-        this.routeFinder = new RouteFinder(defaultHandler, webDir);
+    public WebApp(String webDir, Supplier<RequestHandler> fourOhFour) {
+        this.routeFinder = new RouteFinder(fourOhFour, webDir);
     }
 
-    public void route(String route, Supplier<RequestHandler> handler) {
-        routeFinder.route(route, handler);
+    public void route(HttpMethod method, String route, Supplier<RequestHandler> handler) {
+        routeFinder.route(method, route, handler);
     }
 
     public void start(int httpPort) {

@@ -9,9 +9,9 @@ import baggage.hypertoolkit.request.GrantSessionRequest;
 import baggage.hypertoolkit.security.AuthenticationResult;
 import baggage.hypertoolkit.security.AuthenticationService;
 import baggage.hypertoolkit.security.CookieJar;
-import baggage.hypertoolkit.views.JSONResponse;
+import baggage.hypertoolkit.views.JsonResource;
 import baggage.hypertoolkit.views.Resource;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,11 +39,15 @@ public class GrantSessionAction extends TypedAction<GrantSessionRequest> {
     public final Resource execute(CookieJar cookieJar, GrantSessionRequest request) {
         AuthenticationResult result = authenticationService.authenticate(request.getIdentifier(), request.getPassword());
 
+        JsonObject o = new JsonObject();
+
         if (result.isOk()) {
             cookieJar.grantSessionCookie(result.getPrincipal());
-            return new JSONResponse(new JSONObject().put("success", true), HttpServletResponse.SC_OK, cookieJar.getCookies());
+            o.addProperty("success", true);
+            return new JsonResource(o, HttpServletResponse.SC_OK, cookieJar.getCookies());
+        } else {
+            o.addProperty("success", false);
+            return new JsonResource(o);
         }
-
-        return new JSONResponse(new JSONObject().put("success", false));
     }
 }
