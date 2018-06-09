@@ -77,13 +77,13 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>6.0.6</version>
         </dependency>
-        <dependency>
-            <groupId>java</groupId>
-            <artifactId>jce</artifactId>
-            <scope>system</scope>
-            <version>1.8</version>
-            <systemPath>${java.home}/lib/jce.jar</systemPath>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>java</groupId>-->
+            <!--<artifactId>jce</artifactId>-->
+            <!--<scope>system</scope>-->
+            <!--<version>1.8</version>-->
+            <!--<systemPath>${java.home}/lib/jce.jar</systemPath>-->
+        <!--</dependency>-->
     </dependencies>
 
     <build>
