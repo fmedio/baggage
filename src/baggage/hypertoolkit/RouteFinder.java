@@ -35,9 +35,9 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class RouteFinder {
-    private Map<Key, Supplier<RequestHandler>> map;
-    private Supplier<RequestHandler> defaultHandler;
-    private String webDir;
+    private final Map<Key, Supplier<RequestHandler>> map;
+    private final Supplier<RequestHandler> defaultHandler;
+    private final String webDir;
 
     public RouteFinder(Supplier<RequestHandler> defaultHandler, String webDir) {
         this.defaultHandler = defaultHandler;
@@ -50,8 +50,12 @@ public class RouteFinder {
     }
 
     public Supplier<RequestHandler> resolve(HttpServletRequest request) {
-        String name = request.getRequestURI()
-                .replaceAll("^" + request.getServletPath() + "/", "");
+        Log.debug(this, "RequestURI = " + request.getRequestURI() +
+                ", ServletPath = " + request.getServletPath());
+        String name = request.getRequestURI();
+        if (!name.equals("/")) {
+            name = name.replaceAll("^/", "");
+        }
 
         for (String extension : StaticFileHandler.MIME_TYPES.keySet()) {
             if (name.endsWith(extension)) {
@@ -74,8 +78,8 @@ public class RouteFinder {
     }
 
     private static class Key {
-        private HttpMethod method;
-        private String route;
+        private final HttpMethod method;
+        private final String route;
 
         public Key(HttpMethod method, String route) {
             this.method = method;
@@ -98,6 +102,14 @@ public class RouteFinder {
             int result = method.hashCode();
             result = 31 * result + route.hashCode();
             return result;
+        }
+
+        @Override
+        public String toString() {
+            return "Key{" +
+                    "method=" + method +
+                    ", route='" + route + '\'' +
+                    '}';
         }
     }
 }
